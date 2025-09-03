@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet de remplacement CRISP - Solution N8N avec IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            background: white;
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 60px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .slide h3 {
+            color: #2980b9;
+            font-size: 1.4em;
+            margin: 20px 0 10px 0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .pillar, .domain, .vps-box, .phase {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .pillar:hover, .domain:hover, .vps-box:hover, .phase:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .pillar-title, .domain-title, .vps-title, .phase-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .pillar-desc, .domain-desc, .vps-desc, .phase-desc {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .icon {
+            font-size: 2em;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .nav-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #34495e;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .intro-slide {
+            text-align: center;
+        }
+
+        .intro-slide .subtitle {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            margin-bottom: 40px;
+        }
+
+        .intro-slide .objective {
+            background: #ecf0f1;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+
+        .problem-box {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .solution-box {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .architecture-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .vps-box {
+            flex: 1;
+        }
+
+        .vps1 {
+            border-left-color: #27ae60;
+        }
+
+        .vps2 {
+            border-left-color: #e74c3c;
+        }
+
+        .price {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .specs {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .phase {
+            flex: 1;
+            text-align: center;
+        }
+
+        .phase-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: bold;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .cost-comparison {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            gap: 20px;
+        }
+
+        .cost-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .cost-old {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+        }
+
+        .cost-new {
+            background: #dcfce7;
+            border: 1px solid #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">5</span>
+        </div>
+
+        <!-- Slide 1: Introduction et Contexte -->
+        <div class="slide active intro-slide">
+            <h1>Projet de remplacement de CRISP</h1>
+            <h2 class="subtitle">Solution N8N avec Intelligence Artificielle</h2>
+            
+            <div class="problem-box">
+                <h3>🚨 Problématique actuelle</h3>
+                <p style="font-size: 1.1em; line-height: 1.6;">
+                    <strong>CRISP</strong>, notre outil de chatbot actuel, est devenu <strong>vieillissant</strong> et ne répond plus à nos attentes.<br>
+                    Nous avons identifié <strong>N8N</strong> comme solution de remplacement : une plateforme qui intègre l'IA, 
+                    plus précise, toujours à jour, capable de répondre automatiquement à la place de nos commerciaux.
+                </p>
+            </div>
+            
+            <div class="objective">
+                <h3>🎯 Objectif de la réunion</h3>
+                <p style="font-size: 1.1em; line-height: 1.6;">Valider l'architecture technique et les bonnes pratiques de sécurité pour l'hébergement de <strong>n8n</strong>, <strong>Supabase</strong> et <strong>Ollama</strong> sur 2 VPS OVH</p>
+                
+                <div style="margin-top: 30px;">
+                    <p><strong>Périmètre :</strong> Infrastructure souveraine pour nos besoins IA et automatisation</p>
+                    <p><strong>Enjeu :</strong> Mise en place sécurisée et performante</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: La solution N8N -->
+        <div class="slide">
+            <h1>La solution identifiée : N8N</h1>
+            <h2>Répond à toutes nos exigences</h2>
+            
+            <div class="content-grid">
+                <div class="pillar">
+                    <div class="pillar-title">🔐 Souveraineté numérique</div>
+                    <div class="pillar-desc">
+                        • Maîtrise complète des données sensibles<br>
+                        • Pas de dépendance aux API externes (OpenAI, Google...)
+                    </div>
+                </div>
+                
+                <div class="pillar">
+                    <div class="pillar-title">💰 Optimisation des coûts</div>
+                    <div class="pillar-desc">
+                        <div class="cost-comparison">
+                            <div class="cost-old">
+                                <strong>CRISP</strong><br>
+                                5000€/an
+                            </div>
+                            <div class="cost-new">
+                                <strong>N8N</strong><br>
+                                < 2500€/an
+                            </div>
+                        </div>
+                        <strong style="color: #22c55e;">Économie de plus de 50%</strong>
+                    </div>
+                </div>
+                
+                <div class="pillar">
+                    <div class="pillar-title">🤖 Innovation</div>
+                    <div class="pillar-desc">
+                        <strong>Chatbot IA avancé :</strong><br>
+                        • Réponses instantanées et précises<br>
+                        • Mise à jour automatique des informations<br>
+                        • Connecté au CRM<br>
+                        • Diminution charge de travail commerciaux
+                    </div>
+                </div>
+                
+                <div class="pillar">
+                    <div class="pillar-title">🛡️ Sécurité maintenue</div>
+                    <div class="pillar-desc">
+                        • Traitement local des données<br>
+                        • Contrôle total de l'infrastructure<br>
+                        • Conformité avec nos standards IT
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Besoins IT (Gardé tel quel) -->
+        <div class="slide">
+            <h1>Nos besoins d'expertise IT</h1>
+            <h2>Domaines d'accompagnement souhaités</h2>
+            
+            <div class="content-grid">
+                <div class="domain">
+                    <div class="domain-title">1. Validation de l'architecture</div>
+                    <div class="domain-desc">
+                        • Conformité des VPS OVH avec nos standards<br>
+                        • Validation du dimensionnement vs charge prévue
+                    </div>
+                </div>
+                
+                <div class="domain">
+                    <div class="domain-title">2. Conseils sécurité</div>
+                    <div class="domain-desc">
+                        • Gestion des accès et clés SSH<br>
+                        • Configuration pare-feu et SSL/HTTPS<br>
+                        • Authentification renforcée (2FA/SSO)
+                    </div>
+                </div>
+                
+                <div class="domain">
+                    <div class="domain-title">3. Support initial (si besoin)</div>
+                    <div class="domain-desc">
+                        • Supervision lors de la mise en place<br>
+                        • Recommandations backup automatisé
+                    </div>
+                </div>
+                
+                <div class="domain">
+                    <div class="domain-title">4. Avis pérennité</div>
+                    <div class="domain-desc">
+                        • Procédures maintenance et supervision<br>
+                        • Stratégie mise à jour long terme
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Architecture (Gardé tel quel) -->
+        <div class="slide">
+            <h1>Architecture technique proposée</h1>
+            <h2>Vue d'ensemble - 2 serveurs complémentaires</h2>
+            
+            <div class="architecture-container">
+                <div class="vps-box vps1">
+                    <div class="vps-title">📊 VPS 1 - Automatisation & Data</div>
+                    <div class="price">14,96€/mois</div>
+                    <div class="vps-desc">
+                        <strong>Rôle :</strong> Workflows et stockage intelligent<br><br>
+                        • <strong>n8n</strong> → Automatisation des processus métiers<br>
+                        • <strong>Supabase</strong> → Base de données vectorielle (PostgreSQL + embeddings)
+                    </div>
+                    <div class="specs">
+                        4 vCPU, 8 Go RAM, 80 Go SSD
+                    </div>
+                </div>
+                
+                <div class="vps-box vps2">
+                    <div class="vps-title">🧠 VPS 2 - IA Locale</div>
+                    <div class="price">56,10€/mois</div>
+                    <div class="vps-desc">
+                        <strong>Rôle :</strong> Traitement intelligent local<br><br>
+                        • <strong>Ollama</strong> → Orchestrateur de modèles IA<br>
+                        • <strong>3 modèles :</strong> Mistral Small 3.1, Mistral NeMo, Deepseek R1
+                    </div>
+                    <div class="specs">
+                        8 vCPU, 32 Go RAM, 160 Go SSD
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding: 20px; background: #ecf0f1; border-radius: 15px;">
+                <strong>🔄 Communication sécurisée entre les 2 VPS</strong>
+            </div>
+        </div>
+
+        <!-- Slide 5: Prochaines étapes (Modifié) -->
+        <div class="slide">
+            <h1>Prochaines étapes</h1>
+            <h2>Planning et validation</h2>
+            
+            <div class="timeline">
+                <div class="phase">
+                    <div class="phase-number">1</div>
+                    <div class="phase-title">Validation & Sécurisation</div>
+                    <div class="phase-desc">
+                        <strong>⏱️ 1-2 semaines</strong><br><br>
+                        • Validation finale architecture avec IT<br>
+                        • Configuration sécurisée des VPS<br>
+                        • Mise en place accès et pare-feux
+                    </div>
+                </div>
+                
+                <div class="phase">
+                    <div class="phase-number">2</div>
+                    <div class="phase-title">Installation & Tests</div>
+                    <div class="phase-desc">
+                        <strong>⏱️ 1 mois</strong><br><br>
+                        • Déploiement des applications<br>
+                        • Tests de performance critiques<br>
+                        • Validation des interconnexions
+                    </div>
+                </div>
+                
+                <div class="phase">
+                    <div class="phase-number">3</div>
+                    <div class="phase-title">Déploiement Progressif</div>
+                    <div class="phase-desc">
+                        <strong>⏱️ 3 mois</strong><br><br>
+                        • Mise en production graduelle<br>
+                        • Formation des équipes<br>
+                        • Migration progressive depuis CRISP
+                    </div>
+                </div>
+            </div>
+            
+            <div class="warning">
+                <strong>🎯 Point de vigilance :</strong> Phase de test obligatoire pour valider les performances réelles (CPU-only) avant déploiement élargi
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prev-btn" onclick="previousSlide()" disabled>← Précédent</button>
+            <button class="nav-btn" id="next-btn" onclick="nextSlide()">Suivant →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = n;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+    </script>
+</body>
+</html>
